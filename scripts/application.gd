@@ -2,7 +2,7 @@ extends CanvasLayer
 
 
 const AI_NAME: String = "Alex"
-const AI_CONTEXT_SIZE: int = 8192
+const AI_CONTEXT_SIZE: int = 1024
 const AI_MAX_OUTPUT: int = 320
 const AI_GENKEY: String = "KCPP2342"
 const TYPING_STATUS_TEXT: String = "%s is typing..."
@@ -39,10 +39,9 @@ func _ready() -> void:
 		_user_name = OS.get_environment("USERNAME")
 	elif OS.has_environment("USER"): # macOS, Linux
 		_user_name = OS.get_environment("USER")
-	_user_name = "Blake"
 	
-	_on_message_edit_text_changed(message_edit.text)
 	message_edit.placeholder_text %= AI_NAME
+	message_edit.text_changed.emit(message_edit.text)
 
 
 func _send_request_to_ai() -> void:
@@ -89,6 +88,7 @@ func _populate_message_list() -> void:
 	for message_body: VBoxContainer in message_body_container.get_children():
 		message_body.queue_free()
 	
+	# Populate the container.
 	for message_index: int in range(_messages.size()):
 		var message: Dictionary = _messages[message_index]
 		
@@ -122,13 +122,13 @@ func _on_message_edit_text_changed(_new_text: String) -> void:
 func _on_message_edit_text_submitted(new_text: String) -> void:
 	if not _is_message_edit_empty():
 		message_edit.text = ""
-		_on_message_edit_text_changed(message_edit.text)
+		message_edit.text_changed.emit(message_edit.text)
 		_add_message(_user_name, new_text)
 		_send_request_to_ai()
 
 
 func _on_send_message_pressed() -> void:
-	_on_message_edit_text_submitted(message_edit.text)
+	message_edit.text_submitted.emit(message_edit.text)
 
 
 func _on_retry_response_pressed() -> void:
