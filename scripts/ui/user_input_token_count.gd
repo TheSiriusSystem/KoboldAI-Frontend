@@ -1,13 +1,9 @@
 extends Label
 
 
-const PLACEHOLDER_TEXT: String = "Tokens: %d"
+const PLACEHOLDER_TEXT: String = "Input Tokens: %d"
 
 @onready var tokenize_user_input_request: HTTPRequest = %TokenizeUserInput
-
-
-func _ready() -> void:
-	_on_message_edit_text_changed("")
 
 
 func _on_message_edit_text_changed(new_text: String) -> void:
@@ -19,6 +15,7 @@ func _on_message_edit_text_changed(new_text: String) -> void:
 
 func _on_tokenize_user_input_request_completed(_result: HTTPRequest.Result, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	if response_code != Constants.SUCCESS_RESPONSE_CODE:
+		text = PLACEHOLDER_TEXT.replace("%d", "N/A")
 		print("%s: Error" % tokenize_user_input_request.name)
 		return
 	
