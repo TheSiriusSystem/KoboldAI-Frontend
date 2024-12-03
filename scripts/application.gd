@@ -52,10 +52,15 @@ func _send_request_to_ai() -> void:
 	_is_busy = true
 	
 	var prompt: String = ""
+	var stop_sequences: PackedStringArray = ["\n%s:" % _user_name, "\n%s:" % AI_NAME, "\nyou:", "\nYou:", "\nYOU:"]
 	
-	# Compile the conversation context.
+	# Compile the conversation context and stop sequences.
 	for message: Dictionary in _messages:
 		prompt += "%s: %s\n" % [message.sender, message.content]
+		
+		var stop_sequence: String = "\n%s:" % message.sender
+		if not stop_sequences.has(stop_sequence):
+			stop_sequences.push_back(stop_sequence)
 	prompt += "%s:" % AI_NAME # So the AI knows who to talk as.
 	
 	_generation_start_time = get_seconds()
@@ -64,7 +69,7 @@ func _send_request_to_ai() -> void:
 		"max_context_length": AI_CONTEXT_SIZE,
 		"max_length": AI_MAX_OUTPUT,
 		"prompt": prompt,
-		"stop_sequence": ["\n%s:" % _user_name, "\n%s:" % AI_NAME],
+		"stop_sequence": stop_sequences,
 		"genkey": AI_GENKEY,
 	}))
 
