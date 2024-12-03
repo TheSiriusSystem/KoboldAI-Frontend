@@ -62,6 +62,7 @@ func _add_message(sender: String, content: String) -> void:
 	_messages.push_back({
 		"sender": sender,
 		"content": content,
+		"timestamp": Time.get_time_string_from_system(),
 	})
 	_populate_message_list()
 
@@ -85,6 +86,7 @@ func _populate_message_list() -> void:
 		message_body.name = "MessageBody%d" % message_index
 		(message_body.get_node(^"%Username") as Label).text = message.sender
 		(message_body.get_node(^"%Content") as Label).text = message.content
+		(message_body.get_node(^"%Timestamp") as Label).text = message.timestamp
 		(message_body.get_node(^"%DeleteButton") as Button).pressed.connect(func() -> void:
 			_remove_message(message_index)
 		)
