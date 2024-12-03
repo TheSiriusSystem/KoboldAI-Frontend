@@ -19,10 +19,10 @@ const RESPONSE_TIME_TEXT: String = "%s responded in %.2f seconds"
 @onready var send_message_button: Button = %SendMessageButton
 @onready var retry_response_button: Button = %RetryResponseButton
 @onready var abort_generation_button: Button = %AbortGenerationButton
-@onready var generate_ai_response_request: HTTPRequest = %GenerateAIResponse
-@onready var abort_ai_response_request: HTTPRequest = %AbortAIResponse
 @onready var save_chat_dialog: FileDialog = %SaveChatDialog
 @onready var load_chat_dialog: FileDialog = %LoadChatDialog
+@onready var generate_ai_response_request: HTTPRequest = %GenerateAIResponseRequest
+@onready var abort_ai_response_request: HTTPRequest = %AbortAIResponseRequest
 
 var _user_name: String = DEFAULT_USER_NAME
 var _messages: Array = DEFAULT_MESSAGES.duplicate()

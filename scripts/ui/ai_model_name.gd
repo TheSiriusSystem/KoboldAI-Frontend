@@ -3,7 +3,7 @@ extends Label
 
 const PLACEHOLDER_TEXT: String = "Running on %s"
 
-@onready var get_ai_model_request: HTTPRequest = %GetAIModel
+@onready var get_ai_model_request: HTTPRequest = %GetAIModelRequest
 
 
 func _ready() -> void:

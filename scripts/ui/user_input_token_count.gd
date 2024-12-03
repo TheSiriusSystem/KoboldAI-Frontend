@@ -3,7 +3,7 @@ extends Label
 
 const PLACEHOLDER_TEXT: String = "Input Tokens: %d"
 
-@onready var tokenize_user_input_request: HTTPRequest = %TokenizeUserInput
+@onready var tokenize_user_input_request: HTTPRequest = %TokenizeUserInputRequest
 
 
 func _on_message_edit_text_changed(new_text: String) -> void:
