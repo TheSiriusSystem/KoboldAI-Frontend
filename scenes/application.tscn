@@ -87,6 +87,7 @@ layout_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(640, 0)
 layout_mode = 2
+placeholder_text = "Message %s"
 
 [node name="SendMessageButton" type="Button" parent="VBoxContainer/ChatBox"]
 unique_name_in_owner = true

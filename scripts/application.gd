@@ -41,6 +41,7 @@ func _ready() -> void:
 	_user_name = "Blake"
 	
 	_on_message_edit_text_changed(message_edit.text)
+	message_edit.placeholder_text %= AI_NAME
 
 
 func _send_request_to_ai() -> void:
