@@ -9,6 +9,28 @@
 script = ExtResource("1_y0uus")
 message_body_scene = ExtResource("2_egwlb")
 
+[node name="Buttons" type="HBoxContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -190.5
+offset_top = 18.0
+offset_right = 191.5
+offset_bottom = 49.0
+grow_horizontal = 2
+
+[node name="SaveConversation" type="Button" parent="Buttons"]
+layout_mode = 2
+text = "Save Conversation"
+
+[node name="LoadConversation" type="Button" parent="Buttons"]
+layout_mode = 2
+text = "Load Conversation"
+
+[node name="Settings" type="Button" parent="Buttons"]
+layout_mode = 2
+text = "Settings"
+
 [node name="PanelContainer" type="PanelContainer" parent="."]
 anchors_preset = 8
 anchor_left = 0.5
@@ -16,7 +38,7 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -526.0
-offset_top = -283.0
+offset_top = -245.0
 offset_right = 526.0
 offset_bottom = 165.0
 grow_horizontal = 2
@@ -111,30 +133,51 @@ size_flags_vertical = 8
 disabled = true
 text = "Abort Generation"
 
+[node name="Dialogs" type="Node" parent="."]
+
+[node name="SaveChatDialog" type="FileDialog" parent="Dialogs"]
+unique_name_in_owner = true
+title = "Save Conversation"
+size = Vector2i(303, 180)
+mode_overrides_title = false
+access = 2
+filters = PackedStringArray("*.json")
+
+[node name="LoadChatDialog" type="FileDialog" parent="Dialogs"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+title = "Load Conversation"
+size = Vector2i(303, 180)
+ok_button_text = "Open"
+mode_overrides_title = false
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.json")
+
 [node name="HTTPRequests" type="Node" parent="."]
 
-[node name="GenerateAIResponse" type="HTTPRequest" parent="HTTPRequests"]
+[node name="GenerateAIResponseRequest" type="HTTPRequest" parent="HTTPRequests"]
 unique_name_in_owner = true
 
-[node name="AbortAIResponse" type="HTTPRequest" parent="HTTPRequests"]
+[node name="AbortAIResponseRequest" type="HTTPRequest" parent="HTTPRequests"]
 unique_name_in_owner = true
 
-[node name="TokenizeUserInput" type="HTTPRequest" parent="HTTPRequests"]
+[node name="TokenizeUserInputRequest" type="HTTPRequest" parent="HTTPRequests"]
 unique_name_in_owner = true
 
-[node name="GetAIModel" type="HTTPRequest" parent="HTTPRequests"]
+[node name="GetAIModelRequest" type="HTTPRequest" parent="HTTPRequests"]
 unique_name_in_owner = true
 
-[node name="Timer" type="Timer" parent="."]
-wait_time = 600.0
-autostart = true
-
+[connection signal="pressed" from="Buttons/SaveConversation" to="Dialogs/SaveChatDialog" method="popup_centered_ratio" binds= [0.5]]
+[connection signal="pressed" from="Buttons/LoadConversation" to="Dialogs/LoadChatDialog" method="popup_centered_ratio" binds= [0.5]]
 [connection signal="text_changed" from="VBoxContainer/ChatBox/MessageEdit" to="." method="_on_message_edit_text_changed"]
 [connection signal="text_changed" from="VBoxContainer/ChatBox/MessageEdit" to="VBoxContainer/SideInfo/UserInputTokenCount" method="_on_message_edit_text_changed"]
 [connection signal="text_submitted" from="VBoxContainer/ChatBox/MessageEdit" to="." method="_on_message_edit_text_submitted"]
 [connection signal="pressed" from="VBoxContainer/ChatBox/SendMessageButton" to="." method="_on_send_message_pressed"]
 [connection signal="pressed" from="VBoxContainer/ChatBox/RetryResponseButton" to="." method="_on_retry_response_pressed"]
 [connection signal="pressed" from="VBoxContainer/ChatBox/AbortGenerationButton" to="." method="_on_abort_generation_pressed"]
-[connection signal="request_completed" from="HTTPRequests/GenerateAIResponse" to="." method="_on_generate_ai_response_request_completed"]
-[connection signal="request_completed" from="HTTPRequests/TokenizeUserInput" to="VBoxContainer/SideInfo/UserInputTokenCount" method="_on_tokenize_user_input_request_completed"]
-[connection signal="request_completed" from="HTTPRequests/GetAIModel" to="VBoxContainer/SideInfo/AIModelName" method="_on_get_ai_model_request_completed"]
+[connection signal="file_selected" from="Dialogs/SaveChatDialog" to="." method="_on_save_chat_dialog_file_selected"]
+[connection signal="file_selected" from="Dialogs/LoadChatDialog" to="." method="_on_load_chat_dialog_file_selected"]
+[connection signal="request_completed" from="HTTPRequests/GenerateAIResponseRequest" to="." method="_on_generate_ai_response_request_completed"]
+[connection signal="request_completed" from="HTTPRequests/TokenizeUserInputRequest" to="VBoxContainer/SideInfo/UserInputTokenCount" method="_on_tokenize_user_input_request_completed"]
+[connection signal="request_completed" from="HTTPRequests/GetAIModelRequest" to="VBoxContainer/SideInfo/AIModelName" method="_on_get_ai_model_request_completed"]

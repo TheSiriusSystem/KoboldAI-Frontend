@@ -1,6 +1,8 @@
 extends CanvasLayer
 
 
+const DEFAULT_USER_NAME: String = "User"
+const DEFAULT_MESSAGES: PackedStringArray = []
 const AI_NAME: String = "Alex"
 const AI_CONTEXT_SIZE: int = 1024
 const AI_MAX_OUTPUT: int = 320
@@ -19,9 +21,11 @@ const RESPONSE_TIME_TEXT: String = "%s responded in %.2f seconds"
 @onready var abort_generation_button: Button = %AbortGenerationButton
 @onready var generate_ai_response_request: HTTPRequest = %GenerateAIResponse
 @onready var abort_ai_response_request: HTTPRequest = %AbortAIResponse
+@onready var save_chat_dialog: FileDialog = %SaveChatDialog
+@onready var load_chat_dialog: FileDialog = %LoadChatDialog
 
-var _user_name: String = "User"
-var _messages: Array = []
+var _user_name: String = DEFAULT_USER_NAME
+var _messages: Array = DEFAULT_MESSAGES.duplicate()
 var _is_busy: bool = false:
 	set(value):
 		_is_busy = value
@@ -80,7 +84,7 @@ func _remove_message(message_index: int) -> void:
 	if not _is_busy:
 		_messages.remove_at(message_index)
 		_populate_message_list()
-		retry_response_button.disabled = _messages.size() == 1 or not _is_last_message_from_ai()
+		update_retry_button_state()
 
 
 func _populate_message_list() -> void:
@@ -101,6 +105,10 @@ func _populate_message_list() -> void:
 			_remove_message(message_index)
 		)
 		message_body_container.add_child(message_body)
+
+
+func update_retry_button_state() -> void:
+	retry_response_button.disabled = _messages.size() == 1 or not _is_last_message_from_ai()
 
 
 func get_seconds() -> float:
@@ -142,6 +150,28 @@ func _on_abort_generation_pressed() -> void:
 		abort_ai_response_request.request(Constants.API_URL + "extra/abort", Constants.API_HEADERS, HTTPClient.METHOD_POST, JSON.stringify({
 			"genkey": AI_GENKEY,
 		}))
+
+
+func _on_save_chat_dialog_file_selected(path: String) -> void:
+	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
+	if file:
+		file.store_string(JSON.stringify({
+			"user_name": _user_name,
+			"messages": _messages
+		}, "\t"))
+		file.close()
+
+
+func _on_load_chat_dialog_file_selected(path: String) -> void:
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	if file:
+		var json: JSON = JSON.new()
+		if json.parse(file.get_as_text()) == Error.OK:
+			_user_name = json.data.get("user_name", DEFAULT_USER_NAME)
+			_messages = json.data.get("messages", DEFAULT_MESSAGES.duplicate())
+			_populate_message_list()
+			update_retry_button_state()
+		file.close()
 
 
 func _on_generate_ai_response_request_completed(_result: HTTPRequest.Result, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
