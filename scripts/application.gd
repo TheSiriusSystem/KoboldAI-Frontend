@@ -5,10 +5,13 @@ const AI_NAME: String = "Alex"
 const AI_CONTEXT_SIZE: int = 8192
 const AI_MAX_OUTPUT: int = 320
 const AI_GENKEY: String = "KCPP2342"
+const TYPING_STATUS_TEXT: String = "%s is typing..."
+const RESPONSE_TIME_TEXT: String = "%s responded in %.2f seconds"
 
 @export var message_body_scene: PackedScene
 
 @onready var message_body_container: VBoxContainer = %MessageBodyContainer
+@onready var status_label: Label = %StatusLabel
 @onready var message_edit: LineEdit = %MessageEdit
 @onready var send_message_button: Button = %SendMessageButton
 @onready var retry_response_button: Button = %RetryResponseButton
@@ -27,6 +30,7 @@ var _is_busy: bool = false:
 		abort_generation_button.disabled = not _is_busy
 		for message_body: VBoxContainer in message_body_container.get_children():
 			(message_body.get_node(^"%DeleteButton") as Button).disabled = _is_busy
+var _generation_start_time: float = 0.0
 
 
 func _ready() -> void:
@@ -49,6 +53,8 @@ func _send_request_to_ai() -> void:
 		prompt += "%s: %s\n" % [message.sender, message.content]
 	prompt += "%s:" % AI_NAME # So the AI knows who to talk as.
 	
+	_generation_start_time = get_seconds()
+	status_label.text = TYPING_STATUS_TEXT % AI_NAME
 	generate_ai_response_request.request(Constants.API_URL + "v1/generate", Constants.API_HEADERS, HTTPClient.METHOD_POST, JSON.stringify({
 		"max_context_length": AI_CONTEXT_SIZE,
 		"max_length": AI_MAX_OUTPUT,
@@ -91,6 +97,10 @@ func _populate_message_list() -> void:
 			_remove_message(message_index)
 		)
 		message_body_container.add_child(message_body)
+
+
+func get_seconds() -> float:
+	return Time.get_ticks_msec() / 1000.0
 
 
 func _is_message_edit_empty() -> bool:
@@ -137,5 +147,6 @@ func _on_generate_ai_response_request_completed(_result: HTTPRequest.Result, res
 	
 	var json: JSON = JSON.new()
 	if json.parse(body.get_string_from_utf8()) == Error.OK:
+		status_label.text = RESPONSE_TIME_TEXT % [AI_NAME, get_seconds() - _generation_start_time]
 		_add_message(AI_NAME, json.data.results[0].text.lstrip(" ").rstrip("\n%s:" % _user_name).rstrip("\n%s:" % AI_NAME))
 		_is_busy = false

@@ -44,22 +44,38 @@ offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
 
+[node name="StatusLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="SideInfo" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 23)
 layout_mode = 2
 
 [node name="UserInputTokenCount" type="Label" parent="VBoxContainer/SideInfo"]
-layout_mode = 2
-offset_top = -27.0
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -11.5
 offset_right = 1041.0
-offset_bottom = -4.0
-text = "Counting tokens..."
+offset_bottom = 11.5
+grow_vertical = 2
+text = "Counting input tokens..."
 script = ExtResource("4_vf1ne")
 
 [node name="AIModelName" type="Label" parent="VBoxContainer/SideInfo"]
-layout_mode = 2
-offset_top = -27.0
-offset_right = 1041.0
-offset_bottom = -4.0
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -1041.0
+offset_top = -11.5
+offset_bottom = 11.5
+grow_horizontal = 0
+grow_vertical = 2
 text = "Fetching AI model name..."
 horizontal_alignment = 2
 script = ExtResource("3_du8ay")
