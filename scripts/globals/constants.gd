@@ -1,6 +1,6 @@
 class_name Constants
 extends Object
-## Stores globally-accessible enums and constants.
+## Stores globally-accessible constants.
 
 
 const API_URL: String = "http://localhost:5001/api/"
