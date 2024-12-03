@@ -10,6 +10,7 @@ const RESPONSE_TIME_TEXT: String = "%s responded in %.2f seconds"
 
 @export var message_body_scene: PackedScene
 
+@onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var message_body_container: VBoxContainer = %MessageBodyContainer
 @onready var status_label: Label = %StatusLabel
 @onready var message_edit: LineEdit = %MessageEdit
@@ -72,6 +73,8 @@ func _add_message(sender: String, content: String) -> void:
 		"timestamp": Time.get_time_string_from_system(),
 	})
 	_populate_message_list()
+	await scroll_container.get_v_scroll_bar().changed
+	scroll_container.scroll_vertical = scroll_container.get_v_scroll_bar().max_value
 
 
 func _remove_message(message_index: int) -> void:
