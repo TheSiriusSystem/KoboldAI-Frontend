@@ -12,6 +12,7 @@ func _ready() -> void:
 
 func _on_get_ai_model_request_completed(_result: HTTPRequest.Result, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	if response_code != Constants.SUCCESS_RESPONSE_CODE:
+		text = "Model name unavailable"
 		print("%s: Error" % get_ai_model_request.name)
 		return
 	
