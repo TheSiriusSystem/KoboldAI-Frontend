@@ -1,8 +1,6 @@
 extends CanvasLayer
 
 
-const DEFAULT_USER_NAME: String = "User"
-const DEFAULT_MESSAGES: PackedStringArray = []
 const AI_NAME: String = "Alex"
 const AI_CONTEXT_SIZE: int = 1024
 const AI_MAX_OUTPUT: int = 320
@@ -11,6 +9,19 @@ const TYPING_STATUS_TEXT: String = "%s is typing..."
 const RESPONSE_TIME_TEXT: String = "%s responded in %.2f seconds"
 
 @export var message_body_scene: PackedScene
+
+var _user_name: String = "User"
+var _messages: Array = []
+var _is_busy: bool = false:
+	set(value):
+		_is_busy = value
+		message_edit.editable = not _is_busy
+		send_message_button.disabled = _is_busy if not _is_message_edit_empty() else true
+		retry_response_button.disabled = _is_busy if _is_last_message_from_ai() else true
+		abort_generation_button.disabled = not _is_busy
+		for message_body: VBoxContainer in message_body_container.get_children():
+			(message_body.get_node(^"%DeleteButton") as Button).disabled = _is_busy
+var _generation_start_time: float = 0.0
 
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var message_body_container: VBoxContainer = %MessageBodyContainer
@@ -23,19 +34,6 @@ const RESPONSE_TIME_TEXT: String = "%s responded in %.2f seconds"
 @onready var load_chat_dialog: FileDialog = %LoadChatDialog
 @onready var generate_ai_response_request: HTTPRequest = %GenerateAIResponseRequest
 @onready var abort_ai_response_request: HTTPRequest = %AbortAIResponseRequest
-
-var _user_name: String = DEFAULT_USER_NAME
-var _messages: Array = DEFAULT_MESSAGES.duplicate()
-var _is_busy: bool = false:
-	set(value):
-		_is_busy = value
-		message_edit.editable = not _is_busy
-		send_message_button.disabled = _is_busy if not _is_message_edit_empty() else true
-		retry_response_button.disabled = _is_busy if _is_last_message_from_ai() else true
-		abort_generation_button.disabled = not _is_busy
-		for message_body: VBoxContainer in message_body_container.get_children():
-			(message_body.get_node(^"%DeleteButton") as Button).disabled = _is_busy
-var _generation_start_time: float = 0.0
 
 
 func _ready() -> void:
@@ -171,9 +169,9 @@ func _on_load_chat_dialog_file_selected(path: String) -> void:
 	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	if file:
 		var json: JSON = JSON.new()
-		if json.parse(file.get_as_text()) == Error.OK:
-			_user_name = json.data.get("user_name", DEFAULT_USER_NAME)
-			_messages = json.data.get("messages", DEFAULT_MESSAGES.duplicate())
+		if json.parse(file.get_as_text()) == Error.OK and json.data.has("user_name") and json.data.has("messages") and typeof(json.data.user_name) == TYPE_STRING and typeof(json.data.messages) == TYPE_ARRAY:
+			_user_name = json.data.user_name
+			_messages = json.data.messages
 			_populate_message_list()
 			update_retry_button_state()
 		file.close()
