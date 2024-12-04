@@ -54,7 +54,7 @@ horizontal_scroll_mode = 0
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="ChatBox" type="VBoxContainer" parent="."]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -67,15 +67,15 @@ offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="StatusLabel" type="Label" parent="VBoxContainer"]
+[node name="StatusLabel" type="Label" parent="ChatBox"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="SideInfo" type="Control" parent="VBoxContainer"]
+[node name="SideInfo" type="Control" parent="ChatBox"]
 custom_minimum_size = Vector2(0, 23)
 layout_mode = 2
 
-[node name="UserInputTokenCount" type="Label" parent="VBoxContainer/SideInfo"]
+[node name="UserInputTokenCount" type="Label" parent="ChatBox/SideInfo"]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -87,7 +87,7 @@ grow_vertical = 2
 text = "Counting input tokens..."
 script = ExtResource("4_vf1ne")
 
-[node name="AIModelName" type="Label" parent="VBoxContainer/SideInfo"]
+[node name="AIModelName" type="Label" parent="ChatBox/SideInfo"]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
@@ -103,30 +103,30 @@ text = "Fetching AI model name..."
 horizontal_alignment = 2
 script = ExtResource("3_du8ay")
 
-[node name="ChatBox" type="HBoxContainer" parent="VBoxContainer"]
+[node name="ChatBox" type="HBoxContainer" parent="ChatBox"]
 layout_mode = 2
 
-[node name="MessageEdit" type="LineEdit" parent="VBoxContainer/ChatBox"]
+[node name="MessageEdit" type="LineEdit" parent="ChatBox/ChatBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(640, 0)
 layout_mode = 2
 placeholder_text = "Message %s"
 
-[node name="SendMessageButton" type="Button" parent="VBoxContainer/ChatBox"]
+[node name="SendMessageButton" type="Button" parent="ChatBox/ChatBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
 disabled = true
 text = "Send Message"
 
-[node name="RetryResponseButton" type="Button" parent="VBoxContainer/ChatBox"]
+[node name="RetryResponseButton" type="Button" parent="ChatBox/ChatBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
 disabled = true
 text = "Retry Response"
 
-[node name="AbortGenerationButton" type="Button" parent="VBoxContainer/ChatBox"]
+[node name="AbortGenerationButton" type="Button" parent="ChatBox/ChatBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
@@ -170,14 +170,14 @@ unique_name_in_owner = true
 
 [connection signal="pressed" from="Buttons/SaveConversation" to="Dialogs/SaveChatDialog" method="popup_centered_ratio" binds= [0.5]]
 [connection signal="pressed" from="Buttons/LoadConversation" to="Dialogs/LoadChatDialog" method="popup_centered_ratio" binds= [0.5]]
-[connection signal="text_changed" from="VBoxContainer/ChatBox/MessageEdit" to="." method="_on_message_edit_text_changed"]
-[connection signal="text_changed" from="VBoxContainer/ChatBox/MessageEdit" to="VBoxContainer/SideInfo/UserInputTokenCount" method="_on_message_edit_text_changed"]
-[connection signal="text_submitted" from="VBoxContainer/ChatBox/MessageEdit" to="." method="_on_message_edit_text_submitted"]
-[connection signal="pressed" from="VBoxContainer/ChatBox/SendMessageButton" to="." method="_on_send_message_pressed"]
-[connection signal="pressed" from="VBoxContainer/ChatBox/RetryResponseButton" to="." method="_on_retry_response_pressed"]
-[connection signal="pressed" from="VBoxContainer/ChatBox/AbortGenerationButton" to="." method="_on_abort_generation_pressed"]
+[connection signal="text_changed" from="ChatBox/ChatBox/MessageEdit" to="." method="_on_message_edit_text_changed"]
+[connection signal="text_changed" from="ChatBox/ChatBox/MessageEdit" to="ChatBox/SideInfo/UserInputTokenCount" method="_on_message_edit_text_changed"]
+[connection signal="text_submitted" from="ChatBox/ChatBox/MessageEdit" to="." method="_on_message_edit_text_submitted"]
+[connection signal="pressed" from="ChatBox/ChatBox/SendMessageButton" to="." method="_on_send_message_pressed"]
+[connection signal="pressed" from="ChatBox/ChatBox/RetryResponseButton" to="." method="_on_retry_response_pressed"]
+[connection signal="pressed" from="ChatBox/ChatBox/AbortGenerationButton" to="." method="_on_abort_generation_pressed"]
 [connection signal="file_selected" from="Dialogs/SaveChatDialog" to="." method="_on_save_chat_dialog_file_selected"]
 [connection signal="file_selected" from="Dialogs/LoadChatDialog" to="." method="_on_load_chat_dialog_file_selected"]
 [connection signal="request_completed" from="HTTPRequests/GenerateAIResponseRequest" to="." method="_on_generate_ai_response_request_completed"]
-[connection signal="request_completed" from="HTTPRequests/TokenizeUserInputRequest" to="VBoxContainer/SideInfo/UserInputTokenCount" method="_on_tokenize_user_input_request_completed"]
-[connection signal="request_completed" from="HTTPRequests/GetAIModelRequest" to="VBoxContainer/SideInfo/AIModelName" method="_on_get_ai_model_request_completed"]
+[connection signal="request_completed" from="HTTPRequests/TokenizeUserInputRequest" to="ChatBox/SideInfo/UserInputTokenCount" method="_on_tokenize_user_input_request_completed"]
+[connection signal="request_completed" from="HTTPRequests/GetAIModelRequest" to="ChatBox/SideInfo/AIModelName" method="_on_get_ai_model_request_completed"]
