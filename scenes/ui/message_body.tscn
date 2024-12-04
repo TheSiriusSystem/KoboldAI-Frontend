@@ -34,6 +34,7 @@ text = "Sender"
 
 [node name="Timestamp" type="Label" parent="HBoxContainer"]
 unique_name_in_owner = true
+self_modulate = Color(0.733333, 0.733333, 0.733333, 1)
 layout_mode = 2
 size_flags_vertical = 8
 text = "00:00:00"
