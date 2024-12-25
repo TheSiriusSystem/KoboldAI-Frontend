@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bs2jnurahgg2e"]
+
+[node name="LocationSetting" type="HBoxContainer"]
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+
+[node name="PathEdit" type="LineEdit" parent="."]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+editable = false
+
+[node name="BrowseButton" type="Button" parent="."]
+custom_minimum_size = Vector2(31, 0)
+layout_mode = 2
+icon_alignment = 1
+expand_icon = true

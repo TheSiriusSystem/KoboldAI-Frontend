@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2c6isp354ftb"]
+[gd_scene load_steps=4 format=3 uid="uid://b2c6isp354ftb"]
 
-[ext_resource type="Texture2D" uid="uid://cbmybnbf2y0v2" path="res://Artboard 1.png" id="1_frym8"]
-[ext_resource type="Texture2D" uid="uid://cokn1e46sgnes" path="res://icon.svg" id="2_msh0l"]
+[ext_resource type="Script" path="res://scripts/ui/message_body.gd" id="1_7jl0m"]
+[ext_resource type="Texture2D" uid="uid://cbmybnbf2y0v2" path="res://sprites/circle_mask.png" id="1_frym8"]
+[ext_resource type="Texture2D" uid="uid://nxissy7js10t" path="res://sprites/avatar_ai.png" id="2_f56py"]
 
 [node name="MessageBody" type="VBoxContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
+script = ExtResource("1_7jl0m")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -23,7 +25,7 @@ unique_name_in_owner = true
 layout_mode = 2
 offset_right = 48.0
 offset_bottom = 48.0
-texture = ExtResource("2_msh0l")
+texture = ExtResource("2_f56py")
 expand_mode = 1
 
 [node name="Username" type="Label" parent="HBoxContainer"]
@@ -43,6 +45,7 @@ text = "00:00:00"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
+tooltip_text = "Click to delete this message."
 text = "Delete"
 
 [node name="PanelContainer" type="PanelContainer" parent="."]

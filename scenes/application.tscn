@@ -1,150 +1,300 @@
-[gd_scene load_steps=5 format=3 uid="uid://bi0ulxd6drnqn"]
+[gd_scene load_steps=10 format=3 uid="uid://bi0ulxd6drnqn"]
 
 [ext_resource type="Script" path="res://scripts/application.gd" id="1_y0uus"]
-[ext_resource type="PackedScene" uid="uid://b2c6isp354ftb" path="res://scenes/ui/message_body.tscn" id="2_egwlb"]
-[ext_resource type="Script" path="res://scripts/ui/ai_model_name.gd" id="3_du8ay"]
-[ext_resource type="Script" path="res://scripts/ui/user_input_token_count.gd" id="4_vf1ne"]
+[ext_resource type="Script" path="res://scripts/ui/components/status_label.gd" id="3_ae006"]
+[ext_resource type="Script" path="res://scripts/ui/components/backend_details_label.gd" id="3_du8ay"]
+[ext_resource type="AudioStream" uid="uid://rvmnay7120j6" path="res://sounds/Windows Exclamation.wav" id="4_mgjq3"]
+[ext_resource type="Script" path="res://scripts/ui/components/user_input_token_count.gd" id="4_vf1ne"]
+[ext_resource type="Script" path="res://scripts/ui/dialogs/confirm_new_chat_dialog.gd" id="6_03teq"]
+[ext_resource type="Script" path="res://scripts/ui/dialogs/save_chat_dialog.gd" id="6_n25lu"]
+[ext_resource type="Script" path="res://scripts/ui/dialogs/load_chat_dialog.gd" id="7_x3x61"]
+[ext_resource type="Script" path="res://scripts/ui/components/settings_panel.gd" id="7_xkiuh"]
 
 [node name="Application" type="CanvasLayer"]
 script = ExtResource("1_y0uus")
-message_body_scene = ExtResource("2_egwlb")
 
-[node name="Buttons" type="HBoxContainer" parent="."]
+[node name="Settings" type="Control" parent="."]
+layout_mode = 3
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -190.5
-offset_top = 18.0
-offset_right = 191.5
-offset_bottom = 49.0
+grow_horizontal = 2
+script = ExtResource("7_xkiuh")
+
+[node name="LeftSettings" type="HBoxContainer" parent="Settings"]
+layout_mode = 0
+offset_left = -560.0
+offset_top = 12.0
+offset_right = -176.0
+offset_bottom = 87.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/LeftSettings"]
+custom_minimum_size = Vector2(192, 0)
+layout_mode = 2
+theme_override_constants/separation = 13
+
+[node name="UserName" type="HBoxContainer" parent="Settings/LeftSettings/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/LeftSettings/VBoxContainer/UserName"]
+layout_mode = 2
+text = "Your Name"
+
+[node name="LineEdit" type="LineEdit" parent="Settings/LeftSettings/VBoxContainer/UserName"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "User"
+
+[node name="AIName" type="HBoxContainer" parent="Settings/LeftSettings/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/LeftSettings/VBoxContainer/AIName"]
+layout_mode = 2
+text = "AI's Name"
+
+[node name="LineEdit" type="LineEdit" parent="Settings/LeftSettings/VBoxContainer/AIName"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "AI"
+
+[node name="SystemPrompt" type="TextEdit" parent="Settings/LeftSettings"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Internally, prompt is formatted differently.
+e.g. \"System: AI - You are a pirate.\""
+placeholder_text = "System Prompt"
+wrap_mode = 1
+
+[node name="APIURLEdit" type="LineEdit" parent="Settings"]
+layout_mode = 2
+offset_left = -151.0
+offset_top = 55.0
+offset_right = 152.0
+offset_bottom = 86.0
+size_flags_horizontal = 3
+tooltip_text = "Enter to save changes (provided that URL matches the format).
+Changes will take effect after restarting the application."
+placeholder_text = "http://localhost:5001/api/"
+
+[node name="RightSettings" type="HBoxContainer" parent="Settings"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 176.0
+offset_top = 12.0
+offset_right = 560.0
+offset_bottom = 87.0
+grow_horizontal = 0
+theme_override_constants/separation = 13
+alignment = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/RightSettings"]
+layout_mode = 2
+theme_override_constants/separation = 13
+
+[node name="AITemperature" type="HBoxContainer" parent="Settings/RightSettings/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/RightSettings/VBoxContainer/AITemperature"]
+layout_mode = 2
+text = "Temperature"
+
+[node name="SpinBox" type="SpinBox" parent="Settings/RightSettings/VBoxContainer/AITemperature"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.1
+max_value = 2.0
+step = 0.01
+value = 0.7
+
+[node name="AIRepetitionPenalty" type="HBoxContainer" parent="Settings/RightSettings/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/RightSettings/VBoxContainer/AIRepetitionPenalty"]
+layout_mode = 2
+text = "Rep. Penalty"
+
+[node name="SpinBox" type="SpinBox" parent="Settings/RightSettings/VBoxContainer/AIRepetitionPenalty"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 2.0
+step = 0.01
+value = 1.07
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Settings/RightSettings"]
+layout_mode = 2
+theme_override_constants/separation = 13
+
+[node name="AIContextSize" type="HBoxContainer" parent="Settings/RightSettings/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/RightSettings/VBoxContainer2/AIContextSize"]
+layout_mode = 2
+text = "Context Size"
+
+[node name="SpinBox" type="SpinBox" parent="Settings/RightSettings/VBoxContainer2/AIContextSize"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 512.0
+max_value = 4096.0
+value = 512.0
+rounded = true
+
+[node name="AIMaxOutput" type="HBoxContainer" parent="Settings/RightSettings/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/RightSettings/VBoxContainer2/AIMaxOutput"]
+layout_mode = 2
+text = "Max Output"
+
+[node name="SpinBox" type="SpinBox" parent="Settings/RightSettings/VBoxContainer2/AIMaxOutput"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 16.0
+max_value = 512.0
+value = 16.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Settings"]
+stream = ExtResource("4_mgjq3")
+
+[node name="TopButtons" type="HBoxContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -151.5
+offset_top = 12.0
+offset_right = 151.5
+offset_bottom = 43.0
 grow_horizontal = 2
 
-[node name="SaveConversation" type="Button" parent="Buttons"]
+[node name="StartNewChat" type="Button" parent="TopButtons"]
 layout_mode = 2
-text = "Save Conversation"
+text = "Start New Chat"
 
-[node name="LoadConversation" type="Button" parent="Buttons"]
+[node name="SaveChat" type="Button" parent="TopButtons"]
 layout_mode = 2
-text = "Load Conversation"
+text = "Save Chat"
 
-[node name="Settings" type="Button" parent="Buttons"]
+[node name="LoadChat" type="Button" parent="TopButtons"]
 layout_mode = 2
-text = "Settings"
+text = "Load Chat"
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="ChatPanelContainer" type="PanelContainer" parent="."]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -526.0
-offset_top = -245.0
-offset_right = 526.0
-offset_bottom = 165.0
+offset_left = -560.0
+offset_top = -224.0
+offset_right = 560.0
+offset_bottom = 224.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="ChatPanelContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 follow_focus = true
 horizontal_scroll_mode = 0
 
-[node name="MessageBodyContainer" type="VBoxContainer" parent="PanelContainer/ScrollContainer"]
+[node name="MessageBodyContainer" type="VBoxContainer" parent="ChatPanelContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ChatBox" type="VBoxContainer" parent="."]
+[node name="InputControlContainer" type="VBoxContainer" parent="."]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -491.5
-offset_top = -108.0
-offset_right = 491.5
-offset_bottom = -50.0
+offset_left = -560.0
+offset_top = -93.0
+offset_right = 560.0
+offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="StatusLabel" type="Label" parent="ChatBox"]
+[node name="StatusLabel" type="Label" parent="InputControlContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+script = ExtResource("3_ae006")
 
-[node name="SideInfo" type="Control" parent="ChatBox"]
+[node name="SideInfo" type="Control" parent="InputControlContainer"]
 custom_minimum_size = Vector2(0, 23)
 layout_mode = 2
 
-[node name="UserInputTokenCount" type="Label" parent="ChatBox/SideInfo"]
+[node name="UserInputTokenCount" type="Label" parent="InputControlContainer/SideInfo"]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_top = -11.5
-offset_right = 1041.0
+offset_right = 1120.0
 offset_bottom = 11.5
 grow_vertical = 2
 text = "Counting input tokens..."
 script = ExtResource("4_vf1ne")
 
-[node name="AIModelName" type="Label" parent="ChatBox/SideInfo"]
+[node name="BackendDetails" type="Label" parent="InputControlContainer/SideInfo"]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -1041.0
+offset_left = -1120.0
 offset_top = -11.5
 offset_bottom = 11.5
 grow_horizontal = 0
 grow_vertical = 2
-text = "Fetching AI model name..."
+text = "Fetching backend version..."
 horizontal_alignment = 2
 script = ExtResource("3_du8ay")
 
-[node name="ChatBox" type="HBoxContainer" parent="ChatBox"]
+[node name="ChatBox" type="HBoxContainer" parent="InputControlContainer"]
 layout_mode = 2
 
-[node name="MessageEdit" type="LineEdit" parent="ChatBox/ChatBox"]
+[node name="MessageEdit" type="LineEdit" parent="InputControlContainer/ChatBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(640, 0)
 layout_mode = 2
-placeholder_text = "Message %s"
+size_flags_horizontal = 3
+placeholder_text = "Message AI"
 
-[node name="SendMessageButton" type="Button" parent="ChatBox/ChatBox"]
+[node name="SendMessageButton" type="Button" parent="InputControlContainer/ChatBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
-disabled = true
 text = "Send Message"
 
-[node name="RetryResponseButton" type="Button" parent="ChatBox/ChatBox"]
+[node name="AbortResponseButton" type="Button" parent="InputControlContainer/ChatBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
 disabled = true
-text = "Retry Response"
-
-[node name="AbortGenerationButton" type="Button" parent="ChatBox/ChatBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 8
-disabled = true
-text = "Abort Generation"
+text = "Abort Response"
 
 [node name="Dialogs" type="Node" parent="."]
 
-[node name="SaveChatDialog" type="FileDialog" parent="Dialogs"]
-unique_name_in_owner = true
+[node name="ConfirmNewChat" type="ConfirmationDialog" parent="Dialogs"]
+size = Vector2i(265, 100)
+ok_button_text = "Yes"
+dialog_text = "Really start a new conversation?"
+cancel_button_text = "No"
+script = ExtResource("6_03teq")
+
+[node name="SaveChat" type="FileDialog" parent="Dialogs"]
 title = "Save Conversation"
 size = Vector2i(303, 180)
 mode_overrides_title = false
 access = 2
 filters = PackedStringArray("*.json")
+script = ExtResource("6_n25lu")
 
-[node name="LoadChatDialog" type="FileDialog" parent="Dialogs"]
-unique_name_in_owner = true
+[node name="LoadChat" type="FileDialog" parent="Dialogs"]
 auto_translate_mode = 1
 title = "Load Conversation"
 size = Vector2i(303, 180)
@@ -153,6 +303,13 @@ mode_overrides_title = false
 file_mode = 0
 access = 2
 filters = PackedStringArray("*.json")
+script = ExtResource("7_x3x61")
+
+[node name="InvalidChatFile" type="AcceptDialog" parent="Dialogs"]
+title = "Error"
+position = Vector2i(0, 36)
+size = Vector2i(205, 100)
+dialog_text = "Invalid conversation file."
 
 [node name="HTTPRequests" type="Node" parent="."]
 
@@ -165,19 +322,37 @@ unique_name_in_owner = true
 [node name="TokenizeUserInputRequest" type="HTTPRequest" parent="HTTPRequests"]
 unique_name_in_owner = true
 
+[node name="GetBackendVersionRequest" type="HTTPRequest" parent="HTTPRequests"]
+unique_name_in_owner = true
+
 [node name="GetAIModelRequest" type="HTTPRequest" parent="HTTPRequests"]
 unique_name_in_owner = true
 
-[connection signal="pressed" from="Buttons/SaveConversation" to="Dialogs/SaveChatDialog" method="popup_centered_ratio" binds= [0.5]]
-[connection signal="pressed" from="Buttons/LoadConversation" to="Dialogs/LoadChatDialog" method="popup_centered_ratio" binds= [0.5]]
-[connection signal="text_changed" from="ChatBox/ChatBox/MessageEdit" to="." method="_on_message_edit_text_changed"]
-[connection signal="text_changed" from="ChatBox/ChatBox/MessageEdit" to="ChatBox/SideInfo/UserInputTokenCount" method="_on_message_edit_text_changed"]
-[connection signal="text_submitted" from="ChatBox/ChatBox/MessageEdit" to="." method="_on_message_edit_text_submitted"]
-[connection signal="pressed" from="ChatBox/ChatBox/SendMessageButton" to="." method="_on_send_message_pressed"]
-[connection signal="pressed" from="ChatBox/ChatBox/RetryResponseButton" to="." method="_on_retry_response_pressed"]
-[connection signal="pressed" from="ChatBox/ChatBox/AbortGenerationButton" to="." method="_on_abort_generation_pressed"]
-[connection signal="file_selected" from="Dialogs/SaveChatDialog" to="." method="_on_save_chat_dialog_file_selected"]
-[connection signal="file_selected" from="Dialogs/LoadChatDialog" to="." method="_on_load_chat_dialog_file_selected"]
+[connection signal="ai_response_requested" from="." to="InputControlContainer/StatusLabel" method="_on_application_ai_response_requested"]
+[connection signal="ai_response_requested" from="." to="Settings" method="settings_set_enabled" binds= [false]]
+[connection signal="text_submitted" from="Settings/LeftSettings/VBoxContainer/UserName/LineEdit" to="Settings" method="_on_user_name_text_submitted"]
+[connection signal="text_submitted" from="Settings/LeftSettings/VBoxContainer/AIName/LineEdit" to="Settings" method="_on_ai_name_text_submitted"]
+[connection signal="text_changed" from="Settings/LeftSettings/SystemPrompt" to="Settings" method="_on_system_prompt_text_changed"]
+[connection signal="text_set" from="Settings/LeftSettings/SystemPrompt" to="Settings" method="_on_system_prompt_text_changed"]
+[connection signal="text_submitted" from="Settings/APIURLEdit" to="Settings" method="_on_api_url_edit_text_submitted"]
+[connection signal="value_changed" from="Settings/RightSettings/VBoxContainer/AITemperature/SpinBox" to="Settings" method="_on_ai_temperature_value_changed"]
+[connection signal="value_changed" from="Settings/RightSettings/VBoxContainer/AIRepetitionPenalty/SpinBox" to="Settings" method="_on_ai_repetition_penalty_value_changed"]
+[connection signal="value_changed" from="Settings/RightSettings/VBoxContainer2/AIContextSize/SpinBox" to="Settings" method="_on_ai_context_size_value_changed"]
+[connection signal="value_changed" from="Settings/RightSettings/VBoxContainer2/AIMaxOutput/SpinBox" to="Settings" method="_on_ai_max_output_value_changed"]
+[connection signal="pressed" from="TopButtons/StartNewChat" to="Dialogs/ConfirmNewChat" method="popup_centered"]
+[connection signal="pressed" from="TopButtons/SaveChat" to="Dialogs/SaveChat" method="appear"]
+[connection signal="pressed" from="TopButtons/LoadChat" to="Dialogs/LoadChat" method="popup_centered_ratio" binds= [0.5]]
+[connection signal="text_changed" from="InputControlContainer/ChatBox/MessageEdit" to="InputControlContainer/SideInfo/UserInputTokenCount" method="_on_message_edit_text_changed"]
+[connection signal="text_submitted" from="InputControlContainer/ChatBox/MessageEdit" to="." method="_on_message_edit_text_submitted"]
+[connection signal="pressed" from="InputControlContainer/ChatBox/SendMessageButton" to="." method="_on_send_message_pressed"]
+[connection signal="pressed" from="InputControlContainer/ChatBox/AbortResponseButton" to="." method="_on_abort_response_pressed"]
+[connection signal="confirmed" from="Dialogs/ConfirmNewChat" to="Dialogs/ConfirmNewChat" method="_on_confirmed"]
+[connection signal="file_selected" from="Dialogs/SaveChat" to="Dialogs/SaveChat" method="_on_file_selected"]
+[connection signal="file_select_failed" from="Dialogs/LoadChat" to="Dialogs/InvalidChatFile" method="popup_centered"]
+[connection signal="file_selected" from="Dialogs/LoadChat" to="Dialogs/LoadChat" method="_on_file_selected"]
 [connection signal="request_completed" from="HTTPRequests/GenerateAIResponseRequest" to="." method="_on_generate_ai_response_request_completed"]
-[connection signal="request_completed" from="HTTPRequests/TokenizeUserInputRequest" to="ChatBox/SideInfo/UserInputTokenCount" method="_on_tokenize_user_input_request_completed"]
-[connection signal="request_completed" from="HTTPRequests/GetAIModelRequest" to="ChatBox/SideInfo/AIModelName" method="_on_get_ai_model_request_completed"]
+[connection signal="request_completed" from="HTTPRequests/GenerateAIResponseRequest" to="Settings" method="_on_generate_ai_response_request_completed"]
+[connection signal="request_completed" from="HTTPRequests/GenerateAIResponseRequest" to="InputControlContainer/StatusLabel" method="_on_generate_ai_response_request_completed"]
+[connection signal="request_completed" from="HTTPRequests/TokenizeUserInputRequest" to="InputControlContainer/SideInfo/UserInputTokenCount" method="_on_tokenize_user_input_request_completed"]
+[connection signal="request_completed" from="HTTPRequests/GetBackendVersionRequest" to="InputControlContainer/SideInfo/BackendDetails" method="_on_get_backend_version_request_completed"]
+[connection signal="request_completed" from="HTTPRequests/GetAIModelRequest" to="InputControlContainer/SideInfo/BackendDetails" method="_on_get_ai_model_request_completed"]

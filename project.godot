@@ -19,7 +19,12 @@ config/use_custom_user_dir=true
 config/features=PackedStringArray("4.3", "GL Compatibility")
 run/low_processor_mode=true
 boot_splash/bg_color=Color(0.12549, 0.145098, 0.192157, 1)
-config/icon="res://icon.svg"
+config/icon="res://icon.png"
+
+[autoload]
+
+Signals="*res://scripts/globals/signals.gd"
+Data="*res://scripts/globals/data.gd"
 
 [debug]
 
@@ -27,10 +32,6 @@ gdscript/warnings/untyped_declaration=2
 gdscript/warnings/inferred_declaration=2
 gdscript/warnings/unsafe_cast=1
 gdscript/warnings/unsafe_call_argument=1
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/markdownlabel/plugin.cfg")
 
 [input]
 
